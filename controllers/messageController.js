@@ -46,7 +46,14 @@ class MessageController extends BasicController {
 
     async getContactListWithPagination(req, res) {
         try {
-            const response = await messageService.getContactListWithPagination(req.query);
+            const { currentUser } = req.body;
+            const query = {
+                ...req.query, $or: [
+                    { 'user1.userId': currentUser.userId },
+                    { 'user2.userId': currentUser.userId }
+                ]
+            };
+            const response = await messageService.getContactListWithPagination(query);
             return res.status(200).json(response);
         } catch (error) {
             this.handleResponseError(res, error);

@@ -58,6 +58,15 @@ ContactSchema.index(
         unique: true
     }
 );
+ContactSchema.index(
+    {
+        'user2.userId': 1,
+        'user1.userId': 1
+    },
+    {
+        unique: true
+    }
+);
 
 ContactSchema.pre('save', async function (next) {
     try {

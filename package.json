@@ -4,7 +4,9 @@
   "description": "mesaage service for social media",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "dev": "nodemon index.js",
+    "start": "node index.js"
   },
   "keywords": [
     "message_service"
@@ -14,9 +16,15 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.11.1",
     "dotenv": "^16.4.5",
+    "eureka-js-client": "^4.5.0",
     "express": "^4.19.2",
+    "google-protobuf": "^3.21.4",
+    "jsonwebtoken": "^9.0.2",
     "message_sevice": "file:",
     "mongoose": "^8.6.0",
     "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }

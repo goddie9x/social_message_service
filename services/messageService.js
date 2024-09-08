@@ -22,8 +22,8 @@ class MessageService extends BasicService {
 
         if (!contact && receiverId) {
             contact = new Contact({
-                user1: currentUser.userId,
-                user2: receiverId,
+                user1: { userId: currentUser.userId },
+                user2: { userId: receiverId },
             });
             contact = await contact.save();
         }
@@ -185,7 +185,7 @@ class MessageService extends BasicService {
         if (targetUserIndex < 0) {
             throw new BadRequestException('The user target not exist in this group chat');
         }
-        groupChat.participants.splice(targetUserIndex,1);
+        groupChat.participants.splice(targetUserIndex, 1);
 
         return await groupChat.save();
     }
