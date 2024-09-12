@@ -5,7 +5,7 @@ const Message = require('../models/message');
 const { TargetNotExistException, IncorrectPermission, BadRequestException } = require('../utils/exceptions/commonExceptions');
 const { ROLES } = require('../utils/constants/users');
 const { TARGET_TYPE } = require('../utils/constants/communication');
-const bindMethodsWithThisContext = require('../utils/class/bindMethodsWithThisContext');
+const bindMethodsWithThisContext = require('../utils/classes/bindMethodsWithThisContext');
 const message = require('../models/message');
 
 class MessageService extends BasicService {

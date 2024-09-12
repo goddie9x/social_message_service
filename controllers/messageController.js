@@ -1,6 +1,6 @@
 const messageService = require('../services/messageService');
 const BasicController = require('../utils/controllers/basicController');
-const bindMethodsWithThisContext = require('../utils/class/bindMethodsWithThisContext');
+const bindMethodsWithThisContext = require('../utils/classes/bindMethodsWithThisContext');
 
 class MessageController extends BasicController {
     constructor() {
