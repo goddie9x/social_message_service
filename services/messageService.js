@@ -6,15 +6,11 @@ const { TargetNotExistException, IncorrectPermission, BadRequestException } = re
 const { ROLES } = require('../utils/constants/users');
 const { TARGET_TYPE } = require('../utils/constants/communication');
 const bindMethodsWithThisContext = require('../utils/classes/bindMethodsWithThisContext');
-const message = require('../models/message');
-
+const { sendNewSocketMessageToSocketGateway } = require('../utils/kafka/producer');
 class MessageService extends BasicService {
     constructor() {
         super();
         bindMethodsWithThisContext(this);
-    }
-    setSocket(io) {
-        this.io = io;
     }
     async createNewMessageInbox(payloads) {
         const { targetId, receiverId, currentUser, ...data } = payloads;
