@@ -6,7 +6,8 @@ const { TargetNotExistException, IncorrectPermission, BadRequestException } = re
 const { ROLES } = require('../utils/constants/users');
 const { TARGET_TYPE } = require('../utils/constants/communication');
 const bindMethodsWithThisContext = require('../utils/classes/bindMethodsWithThisContext');
-const { sendNewSocketMessageToSocketGateway } = require('../utils/kafka/producer');
+const { sendNewMessageInfoToSocketGateway } = require('../kakfa/producer');
+const { MESSAGE_CHANNEL } = require('../utils/constants/socketChannel');
 class MessageService extends BasicService {
     constructor() {
         super();
@@ -38,6 +39,10 @@ class MessageService extends BasicService {
         });
 
         const response = await newMessage.save();
+        sendNewMessageInfoToSocketGateway({
+            roomId: MESSAGE_CHANNEL.EVENTS.NEW_MESSAGE + contact._id.toString(),
+            message: newMessage,
+        });
         return response;
     }
     async createNewMessageInGroupChat(payloads) {
@@ -59,6 +64,10 @@ class MessageService extends BasicService {
         });
 
         const response = await newMessage.save();
+        sendNewMessageInfoToSocketGateway({
+            roomId: MESSAGE_CHANNEL.EVENTS.NEW_MESSAGE + groupChat._id.toString(),
+            message: newMessage,
+        });
         return response;
     }
     async deleteMessage(payloads) {
@@ -111,7 +120,14 @@ class MessageService extends BasicService {
         }
         if (!message.hide.includes(userId)) {
             message.hide.push(userId);
-            return await message.save();
+
+            const messageUpdated = await message.save();
+
+            sendNewMessageInfoToSocketGateway({
+                roomId: MESSAGE_CHANNEL.EVENTS.HIDE_MESSAGE + messageUpdated._id,
+                message: messageUpdated.target
+            });
+            return messageUpdated;
         } else {
             throw new BadRequestException('You has already hidden this message.');
         }
@@ -143,7 +159,13 @@ class MessageService extends BasicService {
             id, currentUser, ...updateData
         } = payloads;
 
-        return GroupChat.findByIdAndUpdate(id, updateData);
+        const groupChat = GroupChat.findByIdAndUpdate(id, updateData);
+
+        sendNewMessageInfoToSocketGateway({
+            roomId: MESSAGE_CHANNEL.EVENTS.UPDATE_GROUP_CHAT_INFO,
+            message: groupChat
+        });
+        return groupChat;
     }
     async changeGroupChatOwner(payloads) {
         const {
@@ -153,7 +175,7 @@ class MessageService extends BasicService {
         if (currentUser.userId == newOwnerId) {
             throw new BadRequestException('Same owner');
         }
-        const groupChat = await GroupChat.findById(id);
+        let groupChat = await GroupChat.findById(id);
 
         if (!groupChat) {
             throw new TargetNotExistException('Group chat not exist');
@@ -162,15 +184,19 @@ class MessageService extends BasicService {
             throw new IncorrectPermission();
         }
         groupChat.ownerId = newOwnerId;
-        return groupChat.save();
+        groupChat = await groupChat.save();
+        sendNewMessageInfoToSocketGateway({
+            roomId: MESSAGE_CHANNEL.EVENTS.UPDATE_GROUP_CHAT_INFO,
+            message: groupChat
+        });
     }
     async removeUserFromGroupChat(payloads) {
         const {
             id, currentUser, targetUserId
         } = payloads;
         const { role, userId } = currentUser;
+        let groupChat = await GroupChat.findById(id);
 
-        const groupChat = await GroupChat.findById(id);
         if (!groupChat) {
             throw new BadRequestException('Group chat not exist');
         }
@@ -182,8 +208,13 @@ class MessageService extends BasicService {
             throw new BadRequestException('The user target not exist in this group chat');
         }
         groupChat.participants.splice(targetUserIndex, 1);
+        groupChat =  await groupChat.save();
+        sendNewMessageInfoToSocketGateway({
+            roomId: MESSAGE_CHANNEL.EVENTS.UPDATE_GROUP_CHAT_INFO,
+            message: groupChat
+        });
 
-        return await groupChat.save();
+        return groupChat;
     }
 }
 
