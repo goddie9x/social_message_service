@@ -7,8 +7,7 @@ const MessageSchema = new Schema();
 
 MessageSchema.add(CommunicationSchema);
 
-MessageSchema.index({ sender: 1, target: 1, createdAt: -1, isGroup: 1 });
-
-MessageSchema.index({ target: 1, sender: 1, createdAt: -1, isGroup: 1  });
+MessageSchema.index({ 'target.targetId': 1, 'target.targetType': 1, sender: 1, createdAt: -1 });
+MessageSchema.index({ sender: 1, 'target.targetId': 1, 'target.targetType': 1, createdAt: -1 });
 
 module.exports = mongoose.model('Messages', MessageSchema);

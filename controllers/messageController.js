@@ -87,6 +87,36 @@ class MessageController extends BasicController {
         }
     }
 
+    async getMessagesInContact(req, res) {
+        try {
+            const { page, limit, targetId, ...query } = req.query;
+            const payloads = {
+                currentUser: req.body.currentUser,
+                page, limit, targetId,
+                query
+            }
+            const response = await messageService.getListMessageFromContact(payloads);
+            return res.status(200).json(response);
+        } catch (error) {
+            return this.handleResponseError(res, error);
+        }
+    }
+    async getMessagesInGroupChat(req, res) {
+        try {
+            const { page, limit, targetId, ...query } = req.query;
+            console.log(req.body)
+            const payloads = {
+                currentUser: req.body.currentUser,
+                page, limit, targetId,
+                query
+            }
+            const response = await messageService.getListMessageFromGroupChat(payloads);
+            return res.status(200).json(response);
+        } catch (error) {
+            return this.handleResponseError(res, error);
+        }
+    }
+
     async updateGroupChat(req, res) {
         try {
             const response = await messageService.updateGroupChat(req.body);
