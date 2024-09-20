@@ -6,7 +6,7 @@ const getAuthAndPutCurrentUserAuthToBody = require('./utils/middlewares/getAuthA
 const router = require('./routes');
 const connectToDiscoveryServer = require('./utils/configs/discovery');
 const mapHealthStatusRoute = require('./utils/eureka/healthStatusRoute');
-const activeMessageServiceConsumer = require('./kakfa/consumer');
+const activeMessageServiceConsumer = require('./kafka/consumer');
 
 const PORT = process.env.PORT||3003;
 const app = express();

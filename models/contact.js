@@ -1,6 +1,7 @@
 const mongoose = require('../configs/database');
 const { getListUserByIds } = require('../grpc/userClient');
-const { BadRequestException, TargetNotExistException } = require('../utils/exceptions/commonExceptions');
+const { BadRequestException } = require('../utils/exceptions/commonExceptions');
+const { validateTargetNotExistThrowException } = require('../utils/validate');
 
 const Schema = mongoose.Schema;
 
@@ -73,14 +74,12 @@ ContactSchema.pre('save', async function (next) {
         if (this.user1.userId == this.user2.userId) {
             throw new BadRequestException('Both user are the same');
         }
-        const response = await getListUserByIds([this.user1.userId,this.user2.userId]);
+        const response = await getListUserByIds([this.user1.userId, this.user2.userId]);
 
         users = response?.users;
-        if (!response||!users||users?.length<2) {
-            throw new TargetNotExistException('User not exist');
-        }
-        this.user1.avatarUrl = users.find(x=>x.id==this.user1.userId).avatarUrl;
-        this.user2.avatarUrl = users.find(x=>x.id==this.user2.userId).avatarUrl;
+        validateTargetNotExistThrowException(response && users && users?.length == 2, 'User');
+        this.user1.avatarUrl = users.find(x => x.id == this.user1.userId).avatarUrl;
+        this.user2.avatarUrl = users.find(x => x.id == this.user2.userId).avatarUrl;
         next();
     }
     catch (err) {
