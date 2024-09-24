@@ -85,8 +85,8 @@ class GroupChatService extends BasicService {
         const {
             id, currentUser, participants, ownerId, ...updateData
         } = payloads;
-        let groupChat = GroupChat.findById(id);
-
+        let groupChat = await GroupChat.findById(id);
+        
         validateTargetNotExistThrowException(groupChat, 'Group chat');
         this.validateGroupChatModifyPermission(groupChat, currentUser);
         groupChat.set(updateData);

@@ -153,7 +153,12 @@ class MessageController extends BasicController {
     }
     async updateGroupChat(req, res) {
         try {
-            const response = await groupChatService.updateGroupChat(req.body);
+            const payloads = {
+                id: req.params.id,
+                ...req.body
+            };
+            
+            const response = await groupChatService.updateGroupChat(payloads);
 
             return res.status(200).json(response);
         } catch (error) {
