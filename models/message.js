@@ -3,7 +3,27 @@ const CommunicationSchema = require('../utils/models/communication');
 
 const Schema = mongoose.Schema;
 
-const MessageSchema = new Schema();
+const MessageSchema = new Schema({
+    target: {
+        targetId: {
+            type: Schema.Types.ObjectId,
+            required: true,
+        },
+        targetType: {
+            type: Number,
+            required: true,
+            enum: COMMUNICATION.TARGET_TYPE
+        },
+    },
+    hide: [{
+        type: Schema.Types.ObjectId,
+        required: true,
+    }],
+    removed: {
+        type: Boolean,
+        default: false
+    },
+});
 
 MessageSchema.add(CommunicationSchema);
 
