@@ -15,8 +15,7 @@ class GroupChatService extends BasicService {
         bindMethodsWithThisContext(this);
     }
 
-    async createGroupChat(payloads) {
-        const { currentUser, createdAt, ownerId, updatedAt, ...otherGroupChatData } = payloads;
+    async createGroupChat({ currentUser, createdAt, ownerId, updatedAt, ...otherGroupChatData }) {
         const groupChatData = {
             ...otherGroupChatData,
             ownerId: currentUser.userId
@@ -32,15 +31,13 @@ class GroupChatService extends BasicService {
         });
         return groupChat;
     }
-    async createNewMessageInGroupChat(payloads) {
-        const { targetId } = payloads;
+    async createNewMessageInGroupChat({ targetId }) {
         let groupChat = await GroupChat.findById(targetId);
 
         validateTargetNotExistThrowException(groupChat, 'Group chat not exist');
-        return await this.createNewMessageInGroupChatWithSpecificGroupChat(payloads, groupChat);
+        return await this.createNewMessageInGroupChatWithSpecificGroupChat({ targetId }, groupChat);
     }
-    async createNewMessageInGroupChatWithSpecificGroupChat(payloads, groupChat) {
-        const { targetId, currentUser, ...data } = payloads;
+    async createNewMessageInGroupChatWithSpecificGroupChat({ targetId, currentUser, ...data }, groupChat) {
         const newMessage = new Message({
             ...data,
             sender: currentUser.userId,
@@ -59,16 +56,13 @@ class GroupChatService extends BasicService {
         });
         return response;
     }
-    async getGroupChatListWithPagination(payloads) {
-        const { query, page, limit } = payloads;
-
+    async getGroupChatListWithPagination({ query, page, limit }) {
         return await this.getPaginatedResults({
             model: GroupChat,
             query, page, limit
         });
     }
-    async getGroupChatById(payloads) {
-        const { id, currentUser } = payloads;
+    async getGroupChatById({ id, currentUser }) {
         const groupChat = await GroupChat.findById(id);
 
         validateTargetNotExistThrowException(groupChat, 'Group chat');
@@ -81,10 +75,9 @@ class GroupChatService extends BasicService {
             throw new IncorrectPermission();
         }
     }
-    async updateGroupChat(payloads) {
-        const {
-            id, currentUser, participants, ownerId, ...updateData
-        } = payloads;
+    async updateGroupChat({
+        id, currentUser, participants, ownerId, ...updateData
+    }) {
         let groupChat = await GroupChat.findById(id);
         
         validateTargetNotExistThrowException(groupChat, 'Group chat');
@@ -97,11 +90,9 @@ class GroupChatService extends BasicService {
         });
         return groupChat;
     }
-    async changeGroupChatOwner(payloads) {
-        const {
-            id, currentUser, newOwnerId
-        } = payloads;
-
+    async changeGroupChatOwner({
+        id, currentUser, newOwnerId
+    }) {
         if (currentUser.userId == newOwnerId) {
             throw new BadRequestException('Same owner');
         }
@@ -123,10 +114,9 @@ class GroupChatService extends BasicService {
         }
         return targetUserIndex;
     }
-    async removeUserFromGroupChat(payloads) {
-        const {
-            id, currentUser, targetUserId
-        } = payloads;
+    async removeUserFromGroupChat({
+        id, currentUser, targetUserId
+    }) {
         const { role, userId } = currentUser;
         let groupChat = await GroupChat.findById(id);
 
@@ -159,10 +149,9 @@ class GroupChatService extends BasicService {
 
         return groupChat;
     }
-    async addMultipleUserToGroupChat(payloads) {
-        const {
-            id, currentUser, userIds
-        } = payloads;
+    async addMultipleUserToGroupChat({
+        id, currentUser, userIds
+    }) {
         const groupChat = await GroupChat.findById(id);
         const listUniqueId = [...new Set(userIds)];
         validateTargetNotExistThrowException(groupChat, 'Group chat');
@@ -174,19 +163,16 @@ class GroupChatService extends BasicService {
         })
         return await groupChat.save();
     }
-    async getListMessageFromGroupChat(payloads) {
-        const { currentUser, targetId } = payloads;
+    async getListMessageFromGroupChat({ currentUser, targetId }) {
         const groupChat = await GroupChat.findById(targetId);
 
         validateTargetNotExistThrowException(groupChat, 'Group chat');
         if (currentUser.role == ROLES.USER && !groupChat.participants.find(x => x.userId == currentUser.userId)) {
             throw new IncorrectPermission();
         }
-        return await this.getListMessageFromGroupChatByQuery(payloads);
+        return await this.getListMessageFromGroupChatByQuery({ currentUser, targetId });
     }
-    async getListMessageFromGroupChatByQuery(payloads) {
-        const { page, limit, targetId, query = {} } = payloads;
-
+    async getListMessageFromGroupChatByQuery({ page, limit, targetId, query = {} }) {
         const queryObject = {
             ...query,
             'target.targetId': targetId,
@@ -203,8 +189,7 @@ class GroupChatService extends BasicService {
         });
         return results;
     }
-    async deleteGroupChat(payloads) {
-        const { currentUser, id } = payloads;
+    async deleteGroupChat({ currentUser, id }) {
         const groupChat = await GroupChat.findById(id);
 
         validateTargetNotExistThrowException(groupChat, 'Group chat');

@@ -14,8 +14,7 @@ class MessageService extends BasicService {
         super();
         bindMethodsWithThisContext(this);
     }
-    async createNewMessageInbox(payloads) {
-        const { targetId, receiverId, currentUser, ...data } = payloads;
+    async createNewMessageInbox({ targetId, receiverId, currentUser, ...data }) {
         let contact = await Contact.findById(targetId);
 
         if (!contact && !receiverId) {
@@ -59,15 +58,14 @@ class MessageService extends BasicService {
         });
         return response;
     }
-    async deleteMultipleMessage(payloads) {
-        const { ids, currentUser } = payloads;
+    async deleteMultipleMessage({ ids, currentUser }) {
         const messages = await Message.find({
             sender: currentUser.userId,
             _id: {
                 $in: ids
             }
         });
-        const listIdDeleted = messages.map(x=>x._id);
+        const listIdDeleted = messages.map(x => x._id);
 
         await Message.deleteMany({
             sender: currentUser.userId,
@@ -93,8 +91,7 @@ class MessageService extends BasicService {
             throw new BadRequestException('You are not in the conversation');
         }
     }
-    async hideMessage(payloads) {
-        const { id, currentUser } = payloads;
+    async hideMessage({ id, currentUser }) {
         const { userId, role } = currentUser;
         const message = await Message.findById(id);
 
@@ -121,9 +118,7 @@ class MessageService extends BasicService {
             throw new BadRequestException('You has already hidden this message.');
         }
     }
-    async getContactListWithPagination(payloads) {
-        const { query, page, limit } = payloads;
-
+    async getContactListWithPagination({ query, page, limit }) {
         return await this.getPaginatedResults({
             model: Contact,
             query, page, limit
@@ -135,15 +130,13 @@ class MessageService extends BasicService {
             throw new IncorrectPermission();
         }
     }
-    async getContactById(payloads) {
-        const { id, currentUser } = payloads;
+    async getContactById({ id, currentUser }) {
         const contact = await Contact.findById(id);
         validateTargetNotExistThrowException(contact, 'Contact');
         this.validateUserCanModifyContact(contact, currentUser);
         return contact;
     }
-    async deleteContact(payloads) {
-        const { currentUser, id } = payloads;
+    async deleteContact({ currentUser, id }) {
         const contact = await Contact.findById(id);
 
         validateTargetNotExistThrowException(contact, 'Contact');
@@ -156,14 +149,13 @@ class MessageService extends BasicService {
         });
         return await contact.deleteOne();
     }
-    async getListMessageFromContact(payloads) {
-        const { currentUser, targetId } = payloads;
+    async getListMessageFromContact({ currentUser, targetId }) {
         const contact = await Contact.findById(targetId);
 
         validateTargetNotExistThrowException(contact, 'Contact');
         this.validateUserCanModifyContact(contact, currentUser);
 
-        return await this.getListMessageInContactByQuery({ ...payloads, targetType: TARGET_TYPE.CHAT });
+        return await this.getListMessageInContactByQuery({ currentUser, targetId, targetType: TARGET_TYPE.CHAT });
     }
     validateUserCanGetMessagesInContact(targetId, currentUser) {
         const contact = Contact.findById(targetId);
@@ -172,9 +164,7 @@ class MessageService extends BasicService {
         console.log('153');
         this.validateUserCanModifyContact(contact, currentUser);
     }
-    async getListMessageInContactByQuery(payloads) {
-        const { page, limit, targetId, targetType, query = {} } = payloads;
-
+    async getListMessageInContactByQuery({ page, limit, targetId, targetType, query = {} }) {
         const queryObject = {
             ...query,
             'target.targetId': targetId,
