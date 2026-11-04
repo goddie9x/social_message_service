@@ -157,11 +157,9 @@ class MessageService extends BasicService {
 
         return await this.getListMessageInContactByQuery({ currentUser, targetId, targetType: TARGET_TYPE.CHAT });
     }
-    validateUserCanGetMessagesInContact(targetId, currentUser) {
-        const contact = Contact.findById(targetId);
-        console.log('151');
+    async validateUserCanGetMessagesInContact(targetId, currentUser) {
+        const contact = await Contact.findById(targetId);
         validateTargetNotExistThrowException(contact, 'Contact');
-        console.log('153');
         this.validateUserCanModifyContact(contact, currentUser);
     }
     async getListMessageInContactByQuery({ page, limit, targetId, targetType, query = {} }) {
