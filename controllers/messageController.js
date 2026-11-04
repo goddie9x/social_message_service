@@ -111,12 +111,15 @@ class MessageController extends BasicController {
     }
     async getGroupChatListWithPagination(req, res) {
         try {
+            const currentUser = req.body.currentUser;
+            if (!currentUser?.userId) {
+                return res.status(401).json({ error: 'Authentication required' });
+            }
             // Scope to group chats the current user participates in -
             // never expose the system-wide list.
-            const userId = req.body.currentUser?.userId;
             const query = {
                 ...req.query.query,
-                'participants.userId': userId,
+                'participants.userId': currentUser.userId,
             };
             const response = await groupChatService.getGroupChatListWithPagination({
                 ...req.query,
