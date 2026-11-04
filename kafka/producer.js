@@ -1,5 +1,5 @@
-const { sendNewMessageToSocketGateway } = require('../utils/kafka/producer');
-const { MESSAGE_CHANNEL } = require('../utils/constants/socketChannel');
+const { sendNewMessageToSocketGateway } = require('@godsocial/utils/kafka/producer');
+const { MESSAGE_CHANNEL } = require('@godsocial/utils/constants/socketChannel');
 
 const sendNewMessageInfoToSocketGateway = ({ message, roomId }) => {
     sendNewMessageToSocketGateway({

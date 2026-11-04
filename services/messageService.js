@@ -1,13 +1,13 @@
-const BasicService = require('../utils/services/basicService');
+const BasicService = require('@godsocial/utils/services/basicService');
 const Contact = require('../models/contact');
 const Message = require('../models/message');
-const { IncorrectPermission, BadRequestException } = require('../utils/exceptions/commonExceptions');
-const { ROLES } = require('../utils/constants/users');
-const bindMethodsWithThisContext = require('../utils/classes/bindMethodsWithThisContext');
+const { IncorrectPermission, BadRequestException } = require('@godsocial/utils/exceptions/commonExceptions');
+const { ROLES } = require('@godsocial/utils/constants/users');
+const bindMethodsWithThisContext = require('@godsocial/utils/classes/bindMethodsWithThisContext');
 const { sendNewMessageInfoToSocketGateway, sendCreatedContactToSocketGateway, sendHideMessageToSocketGateway, sendUpdateContactToSocketGateway } = require('../kafka/producer');
-const { TARGET_TYPE } = require('../utils/constants/communication');
+const { TARGET_TYPE } = require('@godsocial/utils/constants/communication');
 const GroupChat = require('../models/groupChat');
-const { validateTargetNotExistThrowException } = require('../utils/validate');
+const { validateTargetNotExistThrowException } = require('@godsocial/utils/validate');
 
 class MessageService extends BasicService {
     constructor() {

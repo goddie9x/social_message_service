@@ -1,7 +1,7 @@
 const mongoose = require('../configs/database');
 const { getListUserByIds } = require('../grpc/userClient');
-const { BadRequestException } = require('../utils/exceptions/commonExceptions');
-const { validateTargetNotExistThrowException } = require('../utils/validate');
+const { BadRequestException } = require('@godsocial/utils/exceptions/commonExceptions');
+const { validateTargetNotExistThrowException } = require('@godsocial/utils/validate');
 
 const Schema = mongoose.Schema;
 

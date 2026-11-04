@@ -1,5 +1,5 @@
 const mongoose = require('../configs/database');
-const CommunicationSchema = require('../utils/models/communication');
+const CommunicationSchema = require('@godsocial/utils/models/communication');
 
 const Schema = mongoose.Schema;
 

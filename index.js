@@ -2,10 +2,10 @@ require('dotenv').config();
 
 const express = require('express');
 const { createServer } = require('http');
-const getAuthAndPutCurrentUserAuthToBody = require('./utils/middlewares/getAuthAndPutCurrentUserAuthToBody');
+const getAuthAndPutCurrentUserAuthToBody = require('@godsocial/utils/middlewares/getAuthAndPutCurrentUserAuthToBody');
 const router = require('./routes');
-const connectToDiscoveryServer = require('./utils/configs/discovery');
-const mapHealthStatusRoute = require('./utils/eureka/healthStatusRoute');
+const connectToDiscoveryServer = require('@godsocial/utils/configs/discovery');
+const mapHealthStatusRoute = require('@godsocial/utils/eureka/healthStatusRoute');
 const activeMessageServiceConsumer = require('./kafka/consumer');
 
 const PORT = process.env.PORT||3003;

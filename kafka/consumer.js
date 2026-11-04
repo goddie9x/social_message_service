@@ -1,5 +1,5 @@
-const { activeMultipleServiceConsumer, createTopicIfNotExists } = require('../utils/kafka/consumer');
-const { KAFKA_TOPICS } = require('../utils/constants/kafka');
+const { activeMultipleServiceConsumer, createTopicIfNotExists } = require('@godsocial/utils/kafka/consumer');
+const { KAFKA_TOPICS } = require('@godsocial/utils/constants/kafka');
 const messageService = require('../services/messageService');
 const groupChatService = require('../services/groupChatService');
 

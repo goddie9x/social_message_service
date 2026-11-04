@@ -1,7 +1,7 @@
 const messageService = require('../services/messageService');
 const groupChatService = require(('../services/groupChatService'));
-const BasicController = require('../utils/controllers/basicController');
-const bindMethodsWithThisContext = require('../utils/classes/bindMethodsWithThisContext');
+const BasicController = require('@godsocial/utils/controllers/basicController');
+const bindMethodsWithThisContext = require('@godsocial/utils/classes/bindMethodsWithThisContext');
 
 class MessageController extends BasicController {
     constructor() {

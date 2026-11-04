@@ -1,13 +1,13 @@
-const BasicService = require('../utils/services/basicService');
+const BasicService = require('@godsocial/utils/services/basicService');
 const GroupChat = require('../models/groupChat');
-const { CONTENT_TYPE } = require('../utils/constants/communication');
+const { CONTENT_TYPE } = require('@godsocial/utils/constants/communication');
 const Message = require('../models/message');
-const { IncorrectPermission, BadRequestException } = require('../utils/exceptions/commonExceptions');
-const { ROLES } = require('../utils/constants/users');
-const bindMethodsWithThisContext = require('../utils/classes/bindMethodsWithThisContext');
+const { IncorrectPermission, BadRequestException } = require('@godsocial/utils/exceptions/commonExceptions');
+const { ROLES } = require('@godsocial/utils/constants/users');
+const bindMethodsWithThisContext = require('@godsocial/utils/classes/bindMethodsWithThisContext');
 const { sendUpdateGroupChatToSocketGateway, sendCreatedGroupChatToSocketGateway, sendNewMessageInfoToSocketGateway } = require('../kafka/producer');
-const { TARGET_TYPE, GROUP_CHAT } = require('../utils/constants/communication');
-const { validateTargetNotExistThrowException } = require('../utils/validate');
+const { TARGET_TYPE, GROUP_CHAT } = require('@godsocial/utils/constants/communication');
+const { validateTargetNotExistThrowException } = require('@godsocial/utils/validate');
 
 class GroupChatService extends BasicService {
     constructor() {
